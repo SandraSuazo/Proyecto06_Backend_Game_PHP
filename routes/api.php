@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\Room_userController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -36,6 +37,13 @@ Route::get('/rooms', [RoomController::class, 'getAllRooms']);
 Route::get('/room', [RoomController::class, 'getRoomById']);
 Route::put('/room', [RoomController::class, 'updateRoom']);
 Route::delete('/delete', [RoomController::class, 'deleteRoom']);
+
+//ROOM_USER
+Route::post('/room-user', [Room_userController::class, 'createRoomUser']);
+Route::get('/members-room', [Room_userController::class, 'getMembersRoom']);
+Route::get('/rooms-user', [Room_userController::class, 'getRoomsUser']);
+Route::put('/room-user', [Room_userController::class, 'updateRoomUser']);
+Route::delete('/room-user', [Room_userController::class, 'deleteRoomUser']);
 
 // MESSAGES
 Route::post('/message', [MessageController::class, 'createMessage']);
