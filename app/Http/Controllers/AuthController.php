@@ -26,20 +26,20 @@ class AuthController extends Controller
                 );
             }
 
+            $name = $request->input('name');
             $email = $request->input('email');
             $password = $request->input('password');
-            $name = $request->input('name');
+
 
             $encryptedPassword = bcrypt($password);
             $newUser = User::create(
                 [
+                    'name' => $name,
                     'email' => $email,
                     'password' => $encryptedPassword,
-                    'name' => $name
                 ]
             );
-
-
+            
             return response()->json(
                 [
                     'success' => true,
@@ -66,7 +66,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3|max:100',
             'email' => 'required|unique:users|email',
-            'password' => 'required|min:6|max:12'
+            'password' => 'required|min:6|max:100'
         ]);
 
         return $validator;
