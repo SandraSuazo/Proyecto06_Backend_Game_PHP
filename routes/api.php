@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
@@ -17,19 +18,28 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 //USERS
 Route::post('/register', [UserController::class, 'register']);
+Route::get('/users', [UserController::class, 'getAllUsers']);
 Route::get('/profile', [UserController::class, 'profile']);
 Route::put('/user', [UserController::class, 'updateProfile']);
 Route::delete('/user', [UserController::class, 'deleteUser']);
 
+// GAMES
+Route::post('/game', [GameController::class, 'createGame']);
+Route::get('/games', [GameController::class, 'getAllGames']);
+Route::get('/game', [GameController::class, 'getGameById']);
+Route::put('/game', [GameController::class, 'updatedGame']);
+Route::delete('/game', [GameController::class, 'deleteGame']);
+
 //ROOMS
 Route::post('/room', [RoomController::class, 'createRoom']);
+Route::get('/rooms', [RoomController::class, 'getAllRooms']);
 Route::get('/room', [RoomController::class, 'getRoomById']);
 Route::put('/room', [RoomController::class, 'updateRoom']);
 Route::delete('/delete', [RoomController::class, 'deleteRoom']);
 
 // MESSAGES
 Route::post('/message', [MessageController::class, 'createMessage']);
-Route::get('/message', [MessageController::class, 'getMessageById']);
 Route::get('/messages', [MessageController::class, 'getAllRoomMessage']);
+Route::get('/message', [MessageController::class, 'getMessageById']);
 Route::put('/message', [MessageController::class, 'updatedMessage']);
 Route::delete('/message', [MessageController::class, 'deleteMessage']);
