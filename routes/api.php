@@ -19,4 +19,5 @@ Route::get('/healthcheck', function (Request $request) {
     return 'Healthcheck ok';
 });
 
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
