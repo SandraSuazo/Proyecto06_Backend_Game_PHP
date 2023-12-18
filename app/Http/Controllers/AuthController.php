@@ -11,68 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        try {
-            $validator = $this->validateRegisterDataUser($request);
-            if ($validator->fails()) {
-                return response()->json(
-                    [
-                        'success' => true,
-                        'message' => 'User registered successfully',
-                        'error' => $validator->errors()
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
-
-            $name = $request->input('name');
-            $email = $request->input('email');
-            $password = $request->input('password');
-
-
-            $encryptedPassword = bcrypt($password);
-            $newUser = User::create(
-                [
-                    'name' => $name,
-                    'email' => $email,
-                    'password' => $encryptedPassword,
-                ]
-            );
-            
-            return response()->json(
-                [
-                    'success' => true,
-                    'message' => 'User registered successfully',
-                    'data' => $newUser
-                ],
-                Response::HTTP_OK
-            );
-        } catch (\Throwable $th) {
-
-            return response()->json(
-                [
-                    'success' => false,
-                    'message' => 'User cant be registered',
-                    'error' => $th->getMessage()
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-    }
-
-    public function validateRegisterDataUser(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:3|max:100',
-            'email' => 'required|unique:users|email',
-            'password' => 'required|min:6|max:100'
-        ]);
-
-        return $validator;
-    }
-
-
     public function login(Request $request)
     {
         try {
