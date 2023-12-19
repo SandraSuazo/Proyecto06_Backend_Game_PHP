@@ -25,7 +25,7 @@ Route::group([
     Route::get('/profile', [UserController::class, 'profile']);
     Route::put('/user', [UserController::class, 'updateProfile']);
     Route::get('/users', [UserController::class, 'getAllUsers'])->middleware('isAdmin');
-    Route::delete('/user', [UserController::class, 'deleteUser'])->middleware('isSuperAdmin');
+    Route::delete('/user/{id}', [UserController::class, 'deleteUser'])->middleware('isAdmin');
 });
 
 // GAMES

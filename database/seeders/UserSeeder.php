@@ -24,12 +24,6 @@ class UserSeeder extends Seeder
                     'role' => 'admin',
                     'password' => bcrypt('Whopper'),
                 ],
-                [
-                    'name' => 'superAdmin',
-                    'email' => 'superadmin@superadmin.com',
-                    'role' => 'superAdmin',
-                    'password' => bcrypt('Whopper'),
-                ]
             ]
 
         );
