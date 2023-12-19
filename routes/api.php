@@ -29,11 +29,15 @@ Route::group([
 });
 
 // GAMES
-Route::post('/game', [GameController::class, 'createGame']);
-Route::get('/game', [GameController::class, 'getGameById']);
-Route::get('/games', [GameController::class, 'getAllGames']);
-Route::put('/game', [GameController::class, 'updatedGame']);
-Route::delete('/game', [GameController::class, 'deleteGame']);
+Route::group([
+    'middleware' => ['auth:sanctum']
+], function () {
+    Route::post('/game', [GameController::class, 'createGame']);
+    Route::get('/game', [GameController::class, 'getGameById']);
+    Route::get('/games', [GameController::class, 'getAllGames']);
+    Route::put('/game', [GameController::class, 'updatedGame'])->middleware('isAdmin');
+    Route::delete('/game', [GameController::class, 'deleteGame'])->middleware('isAdmin');
+});
 
 //ROOMS
 Route::post('/room', [RoomController::class, 'createRoom']);
