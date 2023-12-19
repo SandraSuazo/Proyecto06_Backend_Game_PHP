@@ -35,8 +35,8 @@ Route::group([
     Route::post('/game', [GameController::class, 'createGame']);
     Route::get('/game/{id}', [GameController::class, 'getGameById']);
     Route::get('/games', [GameController::class, 'getAllGames']);
-    Route::put('/game', [GameController::class, 'updatedGame'])->middleware('isAdmin');
-    Route::delete('/game', [GameController::class, 'deleteGame'])->middleware('isAdmin');
+    Route::put('/game/{id}', [GameController::class, 'updateGame'])->middleware('isAdmin');
+    Route::delete('/game/{id}', [GameController::class, 'deleteGame'])->middleware('isAdmin');
 });
 
 //ROOMS

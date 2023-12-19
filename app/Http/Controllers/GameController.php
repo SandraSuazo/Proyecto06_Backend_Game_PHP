@@ -14,7 +14,7 @@ class GameController extends Controller
         try {
             $user = auth()->user();
             $validator = Validator::make($request->all(), [
-                'name' => 'required|min:3|max:25',
+                'name' => 'required|min:5|max:60',
                 'category' => 'required|in:shooter,action,arcade'
             ]);
             if ($validator->fails()) {
@@ -108,4 +108,62 @@ class GameController extends Controller
             );
         }
     }
+
+    public function updateGame(Request $request, $id)
+    {
+        try {
+
+            $game = Game::findOrFail($id);
+            if (!$game) {
+                return response()->json(
+                    [
+                        "success" => false,
+                        "message" => "Game not found",
+                    ],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|min:5|max:60',
+                'category' => 'in:shooter,action,arcade',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                        "success" => false,
+                        "message" => "Validation Error: " . $validator->errors()->first(),
+                        "errors" => $validator->errors(),
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            $game->name = $request->input('name', $game->name);
+            $game->category = $request->input('category', $game->category);
+
+            $game->save();
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "Game updated successfully",
+                    "data" => $game,
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Game cant be updated",
+                    'error' => $th->getMessage()
+
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 }
