@@ -47,7 +47,7 @@ Route::group([
     Route::get('/room/{id}', [RoomController::class, 'getRoomById']);
     Route::get('/rooms', [RoomController::class, 'getAllRooms'])->middleware('isAdmin');
     Route::put('/room/{id}', [RoomController::class, 'updateRoom'])->middleware('isAdmin');
-    Route::delete('/delete/{id}', [RoomController::class, 'deleteRoom'])->middleware('isAdmin');
+    Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->middleware('isAdmin');
 });
 
 //ROOM_USER

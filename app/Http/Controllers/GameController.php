@@ -47,7 +47,6 @@ class GameController extends Controller
     {
         try {
             $game = Game::query()->find($id);
-
             if (!$game) {
                 return response()->json(
                     [
@@ -57,7 +56,6 @@ class GameController extends Controller
                     Response::HTTP_NOT_FOUND
                 );
             }
-
             return response()->json(
                 [
                     "success" => true,
@@ -67,7 +65,6 @@ class GameController extends Controller
                 Response::HTTP_OK
             );
         } catch (\Throwable $th) {
-
             return response()->json(
                 [
                     "success" => false,
@@ -83,7 +80,6 @@ class GameController extends Controller
     {
         try {
             $games = Game::all();
-
             return $games->isEmpty()
                 ? response()->json(
                     [
@@ -92,17 +88,19 @@ class GameController extends Controller
                     ],
                     Response::HTTP_OK
                 )
-                : response()->json([
-                    "success" => true,
-                    "message" => "Games archieved successfully",
-                    "data" => $games
-                ], Response::HTTP_OK
-            );
+                : response()->json(
+                    [
+                        "success" => true,
+                        "message" => "Games achieved successfully",
+                        "data" => $games
+                    ],
+                    Response::HTTP_OK
+                );
         } catch (\Throwable $th) {
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Error archieving the games",
+                    "message" => "Error achieving the games",
                     "error" => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -113,7 +111,6 @@ class GameController extends Controller
     public function updateGame(Request $request, $id)
     {
         try {
-
             $game = Game::findOrFail($id);
             if (!$game) {
                 return response()->json(
@@ -124,12 +121,10 @@ class GameController extends Controller
                     Response::HTTP_NOT_FOUND
                 );
             }
-
             $validator = Validator::make($request->all(), [
                 'name' => 'required|min:5|max:60',
                 'category' => 'in:shooter,action,arcade',
             ]);
-
             if ($validator->fails()) {
                 return response()->json(
                     [
@@ -140,12 +135,9 @@ class GameController extends Controller
                     Response::HTTP_BAD_REQUEST
                 );
             }
-
             $game->name = $request->input('name', $game->name);
             $game->category = $request->input('category', $game->category);
-
             $game->save();
-
             return response()->json(
                 [
                     "success" => true,
@@ -170,10 +162,9 @@ class GameController extends Controller
     public function deleteGame(Request $request, $id)
     {
         try {
-            $game = Game::find($id);
-
+            $game = Game::query()->find($id);
             if ($game) {
-                $game->delete();
+                Game::destroy($id);
                 return response()->json(
                     [
                         "success" => true,
@@ -182,7 +173,6 @@ class GameController extends Controller
                     Response::HTTP_OK
                 );
             }
-
             return response()->json(
                 [
                     "success" => false,
