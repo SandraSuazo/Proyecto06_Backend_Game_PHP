@@ -95,4 +95,50 @@ class UserController extends Controller
             );
         }
     }
+
+    public function updateProfile(Request $request)
+    {
+
+        try {
+            $token = auth()->user();
+            $user = User::query()->find($token->id);
+
+            $name = $request->input('name');
+            $email = $request->input('email');
+            $password = $request->input('password');
+
+            if ($request->has('name')) {
+                $user->name = $name;
+            }
+
+            if ($request->has('email')) {
+                $user->email = $email;
+            }
+
+            if ($request->has('password')) {
+                $user->password = bcrypt($password);
+            }
+
+            $user->save();
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "User updated",
+                    "data" => $user
+                ],
+                Response::HTTP_CREATED
+            );
+
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Profile user cant be updated",
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }

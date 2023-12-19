@@ -25,7 +25,5 @@ class DatabaseSeeder extends Seeder
         Game::factory(6)->create();
         Room::factory(6)->create();
         Message::factory(20)->create();
-
-
     }
 }
