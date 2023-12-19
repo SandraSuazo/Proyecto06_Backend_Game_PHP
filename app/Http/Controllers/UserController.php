@@ -69,4 +69,30 @@ class UserController extends Controller
 
         return $validator;
     }
+
+    public function profile(Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "User",
+                    "data" => $user
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Error getting profile user",
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }

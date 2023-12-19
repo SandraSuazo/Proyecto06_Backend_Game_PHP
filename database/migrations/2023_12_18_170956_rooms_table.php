@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100)->unique()->require();
+            $table->string('name', 100)->require();
             $table->boolean("is_active")->default(true);
             $table->unsignedBigInteger("game_id");
             $table->foreign("game_id")->references("id")->on("games");
