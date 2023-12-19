@@ -40,11 +40,15 @@ Route::group([
 });
 
 //ROOMS
+Route::group([
+    'middleware' => ['auth:sanctum']
+], function () {
 Route::post('/room', [RoomController::class, 'createRoom']);
 Route::get('/room', [RoomController::class, 'getRoomById']);
-Route::get('/rooms', [RoomController::class, 'getAllRooms']);
-Route::put('/room', [RoomController::class, 'updateRoom']);
-Route::delete('/delete', [RoomController::class, 'deleteRoom']);
+Route::get('/rooms', [RoomController::class, 'getAllRooms'])->middleware('isAdmin');
+Route::put('/room', [RoomController::class, 'updateRoom'])->middleware('isAdmin');
+Route::delete('/delete', [RoomController::class, 'deleteRoom'])->middleware('isAdmin');
+});
 
 //ROOM_USER
 Route::post('/room-user', [Room_userController::class, 'createRoomUser']);
