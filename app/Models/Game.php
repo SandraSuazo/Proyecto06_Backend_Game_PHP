@@ -10,6 +10,7 @@ class Game extends Model
     protected $fillable = [
         'name',
         'category',
+        'user_id'
     ];
     use HasFactory;
 }
