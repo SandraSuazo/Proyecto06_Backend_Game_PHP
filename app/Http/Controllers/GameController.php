@@ -162,9 +162,10 @@ class GameController extends Controller
     public function deleteGame(Request $request, $id)
     {
         try {
-            $game = Game::query()->find($id);
+            $game = Game::find($id);
+
             if ($game) {
-                Game::destroy($id);
+                $game->delete();
                 return response()->json(
                     [
                         "success" => true,
@@ -173,6 +174,7 @@ class GameController extends Controller
                     Response::HTTP_OK
                 );
             }
+
             return response()->json(
                 [
                     "success" => false,
