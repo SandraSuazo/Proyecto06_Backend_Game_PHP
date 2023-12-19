@@ -53,4 +53,39 @@ class RoomController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getRoomById(Request $request, $id)
+    {
+        try {
+            $room = Room::query()->find($id);
+
+            if (!$room) {
+                return response()->json(
+                    [
+                        "success" => false,
+                        "message" => "Room not found"
+                    ],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "Room archieved succesfully",
+                    "data" => $room
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Room cant be archieved",
+                    "error" => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
