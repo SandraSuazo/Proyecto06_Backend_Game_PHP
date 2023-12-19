@@ -43,12 +43,12 @@ class GameController extends Controller
         }
     }
 
-    public function getGameById(Request $request,$id)
+    public function getGameById(Request $request, $id)
     {
         try {
             $game = Game::query()->find($id);
 
-            if(!$game){
+            if (!$game) {
                 return response()->json(
                     [
                         "success" => false,
@@ -66,7 +66,6 @@ class GameController extends Controller
                 ],
                 Response::HTTP_OK
             );
-
         } catch (\Throwable $th) {
 
             return response()->json(
@@ -79,5 +78,34 @@ class GameController extends Controller
             );
         }
     }
-}
 
+    public function getAllGames(Request $request)
+    {
+        try {
+            $games = Game::all();
+
+            return $games->isEmpty()
+                ? response()->json(
+                    [
+                        "success" => true,
+                        "message" => "There are no games"
+                    ],
+                    Response::HTTP_OK
+                )
+                : response()->json([
+                    "success" => true,
+                    "message" => "Games obtained successfully",
+                    "data" => $games
+                ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Error obtaining the games",
+                    "error" => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+}
