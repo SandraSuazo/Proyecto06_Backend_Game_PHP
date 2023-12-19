@@ -129,12 +129,39 @@ class UserController extends Controller
                 ],
                 Response::HTTP_CREATED
             );
-
         } catch (\Throwable $th) {
             return response()->json(
                 [
                     "success" => false,
                     "message" => "Profile user cant be updated",
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    public function getAllUsers(Request $request)
+    {
+        try {
+            $count = $request->query('count', 10);
+            $activeUser = $request->query('is_active', true);
+
+            $users = User::where('is_active', $activeUser)->paginate($count);
+
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'retrieve users',
+                    'data' => $users
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Users cant be retrieved',
                     'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
