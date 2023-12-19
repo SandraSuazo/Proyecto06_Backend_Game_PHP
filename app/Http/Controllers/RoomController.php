@@ -88,4 +88,39 @@ class RoomController extends Controller
             );
         }
     }
+
+    public function getAllRooms(Request $request)
+    {
+        try {
+
+            $rooms = Room::query()->get();
+
+            if (count($rooms) === 0) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "No rooms found",
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "Rooms obtained succesfully",
+                    "data" => $rooms
+                ],
+                Response::HTTP_OK
+            );
+
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Rooms cant be archieved",
+                    "error" => $th->getMessage()
+
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }

@@ -61,7 +61,7 @@ class GameController extends Controller
             return response()->json(
                 [
                     "success" => true,
-                    "message" => "Game achieved succesfully",
+                    "message" => "Game archieved succesfully",
                     "data" => $game
                 ],
                 Response::HTTP_OK
@@ -71,7 +71,7 @@ class GameController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Error achieve the game",
+                    "message" => "Error archieve the game",
                     'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -94,14 +94,15 @@ class GameController extends Controller
                 )
                 : response()->json([
                     "success" => true,
-                    "message" => "Games obtained successfully",
+                    "message" => "Games archieved successfully",
                     "data" => $games
-                ], Response::HTTP_OK);
+                ], Response::HTTP_OK
+            );
         } catch (\Throwable $th) {
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Error obtaining the games",
+                    "message" => "Error archieving the games",
                     "error" => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
