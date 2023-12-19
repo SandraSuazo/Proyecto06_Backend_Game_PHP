@@ -166,4 +166,38 @@ class GameController extends Controller
         }
     }
 
+    public function deleteGame(Request $request, $id)
+    {
+        try {
+            $game = Game::find($id);
+
+            if ($game) {
+                $game->delete();
+                return response()->json(
+                    [
+                        "success" => true,
+                        "message" => "Game deleted successfully"
+                    ],
+                    Response::HTTP_OK
+                );
+            }
+
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Game not found"
+                ],
+                Response::HTTP_NOT_FOUND
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Game could not be deleted",
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
