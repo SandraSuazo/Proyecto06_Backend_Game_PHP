@@ -168,4 +168,30 @@ class UserController extends Controller
             );
         }
     }
+
+    public function deleteUser(Request $request, $id)
+    {
+        try {
+
+            $user = User::findOrFail($id);
+
+            $user->delete();
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "User deleted",
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "User cant be deleted.",
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
