@@ -62,8 +62,11 @@ Route::group([
 });
 
 //ROOM_USER
-Route::post('/room-user', [Room_userController::class, 'createRoomUser']);
-Route::get('/rooms-user', [Room_userController::class, 'getRoomsUser']);
-Route::get('/members-room', [Room_userController::class, 'getMembersRoom']);
-Route::put('/room-user', [Room_userController::class, 'updateRoomUser']);
-Route::delete('/room-user', [Room_userController::class, 'deleteRoomUser']);
+Route::group([
+    'middleware' => ['auth:sanctum']
+], function () {
+Route::post('/room/{room_id}/user/{user_id}', [Room_userController::class, 'addUserToRoom']);
+Route::delete('/room/{room_id}/user/{user_id}', [Room_userController::class, 'removeUserFromRoom']);
+});
+
+
