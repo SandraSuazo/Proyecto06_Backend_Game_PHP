@@ -224,7 +224,7 @@ El usuario puede buscar una sala de juego por el id de la misma.
 
 - **GET-ALL-ROOMS**
 
-Esta funcionalidad está reservada para el admin. Puede buscar todas las salas de juego que han sido creadas.
+Puede buscar todas las salas de juego que han sido creadas.
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|

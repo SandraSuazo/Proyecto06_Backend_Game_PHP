@@ -123,6 +123,40 @@ class RoomController extends Controller
         }
     }
 
+    public function getAllRoomsByGame(Request $request, $game_id)
+    {
+        try {
+            $rooms = Room::where('game_id', $game_id)->get();
+
+            if (count($rooms) === 0) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "No rooms found for the specified game",
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "message" => "Rooms obtained successfully",
+                    "data" => $rooms
+                ],
+                Response::HTTP_OK
+            );
+
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Rooms cannot be retrieved",
+                    "error" => $th->getMessage()
+
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     public function updateRoom(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

@@ -45,6 +45,7 @@ Route::group([
 ], function () {
     Route::post('/room', [RoomController::class, 'createRoom']);
     Route::get('/room/{id}', [RoomController::class, 'getRoomById']);
+    Route::get('/rooms/{game_id}', [RoomController::class, 'getAllRoomsByGame']);
     Route::get('/rooms', [RoomController::class, 'getAllRooms'])->middleware('isAdmin');
     Route::put('/room/{id}', [RoomController::class, 'updateRoom'])->middleware('isAdmin');
     Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->middleware('isAdmin');
