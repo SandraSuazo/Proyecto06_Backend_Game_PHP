@@ -168,4 +168,28 @@ class RoomController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function deleteRoom(Request $request, $id)
+    {
+        try {
+            $room = Room::find($id);
+            if (!$room) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "Room not found",
+                ], Response::HTTP_NOT_FOUND);
+            }
+            $room->update(['is_active' => false]);
+            return response()->json([
+                "success" => true,
+                "message" => "Room soft deleted successfully",
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Room cannot be soft deleted",
+                "error" => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
