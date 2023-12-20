@@ -126,7 +126,7 @@ Esta acción sólo puede ser realizada si eres admin.
 
 - **DELETE-USER**
 
-Funcionalidad reservada al admin. Se realiza borrado lógico. El usuario admin no puede ser elimnado.
+Funcionalidad reservada al admin. El usuario admin no puede ser elimnado.
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|

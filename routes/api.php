@@ -14,6 +14,7 @@ Route::get('/healthcheck', function (Request $request) {
 });
 
 // AUTH
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 

@@ -184,12 +184,12 @@ class UserController extends Controller
                 );
             }
 
-            $user->update(['isActive' => false]);
+            $user->delete();
 
             return response()->json(
                 [
                     "success" => true,
-                    "message" => "User deactivated successfully",
+                    "message" => "User deleted successfully",
                 ],
                 Response::HTTP_OK
             );
@@ -197,7 +197,7 @@ class UserController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "User cant be deactivated.",
+                    "message" => "User cant be deleted.",
                     'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
