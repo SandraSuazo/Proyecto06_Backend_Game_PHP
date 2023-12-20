@@ -42,4 +42,46 @@ class MessageController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getMessageById(Request $request, $id)
+    {
+        try {
+            $message = Message::find($id);
+            if (!$message) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "Message not found"
+                ], Response::HTTP_NOT_FOUND);
+            }
+            return response()->json([
+                "success" => true,
+                "message" => "Message retrieved successfully",
+                "data" => $message
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Message cannot be retrieved",
+                "error" => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getAllRoomMessage(Request $request, $room_id)
+    {
+        try {
+            $messages = Message::where('room_id', $room_id)->get();
+            return response()->json([
+                "success" => true,
+                "message" => "Messages retrieved successfully",
+                "data" => $messages
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Messages cannot be retrieved",
+                "error" => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
