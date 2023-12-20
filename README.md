@@ -126,7 +126,7 @@ Esta acción sólo puede ser realizada si eres admin.
 
 - **DELETE-USER**
 
-El admin puede eliminar usuarios.
+Funcionalidad reservada al admin. Se realiza borrado lógico.
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|
@@ -189,7 +189,7 @@ Puede ser modificado simplemente uno de los campos o todos si así se desea. Par
 
 - **DELETE-GAME**
 
-Funcionalidad reservada al admin. Debe introducirse el id del videojuego a eliminar.
+Funcionalidad reservada al admin. Debe introducirse el id del videojuego a eliminar. 
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|
@@ -250,11 +250,71 @@ Puede ser modificado simplemente uno de los campos o todos si así se desea. Par
 
 - **DELETE-ROOM**
 
-Funcionalidad reservada al admin. Debe introducirse el id de la sala de juego a eliminar.
+Funcionalidad reservada al admin. Debe introducirse el id de la sala de juego a eliminar. Se realiza borrado lógico.
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|
 | DELETE |  `http://localhost:8000/api/room/id` |      Elimina una sala de juego    |
+
+**Messages**
+
+- **CREATE-MESSAGES**
+
+Genera mensajes en la sala de juego en la que se encuentra el usuario
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+| POST   |  `http://localhost:8000/api/message` |Genera mensajes en la sala de juego|
+
+**Payload de Ejemplo:**
+```json
+{
+    "message": "Mensaje", 
+    "user_id": "User id",
+    "room_id": "Room Id",
+}
+```
+El mensaje tiene una longitud máxima de 200 caracteres.
+
+- **GET-MESSAGE-BY-ID**
+
+El usuario puede buscar un mensaje por su Id.
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+|  GET   |`http://localhost:8000/api/message/id`|       Burcar mensaje por Id       |
+
+- **GET-ALL-MESSAGES**
+
+Muestra todos los mensajes creados en una sala.
+
+| Método |              Endpoint                        |             Descripción           |
+|--------|----------------------------------------------|-----------------------------------|
+|  GET   | `http://localhost:8000/api/messages/room_id` |     Mostrar todos los mensajes    |
+
+- **UPDATE-MESSAGE**
+
+Editar un mensaje creado. Sólo podrá ser modificado por el usuario que ha generado ese mensaje.
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+|  PUT   |`http://localhost:8000/api/message/id`|          Editar un mensaje        |
+
+**Payload de Ejemplo:**
+```json
+{
+    "message": "Contenido del mensaje"
+}
+```
+Puede ser modificado simplemente uno de los campos o todos si así se desea. Para ello, en el payload debes indicar y rellenar los campos a modificar.
+
+- **DELETE-MESSAGE**
+
+Elimina un mensaje generado por el usuario. Sólo podrá ser eliminado por el usuario que ha generado ese mensaje.
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+| DELETE |`http://localhost:8000/api/message/id`|          Elimina un mensaje       |
 
 
 ## Contribuciones
