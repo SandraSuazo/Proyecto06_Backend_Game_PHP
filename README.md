@@ -32,6 +32,7 @@ AsanGames ha sido diseñado con la finalidad de recrear un portal de juegos util
 
 ## Diseño de la BBDD
 
+<img src= "assets/DiagramaBackend.png" width="700" height="300">
 
 # Endpoints del Proyecto 
 
