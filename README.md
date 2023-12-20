@@ -316,6 +316,24 @@ Elimina un mensaje generado por el usuario. Sólo podrá ser eliminado por el us
 |--------|--------------------------------------|-----------------------------------|
 | DELETE |`http://localhost:8000/api/message/id`|          Elimina un mensaje       |
 
+**Room_User**
+
+- **ADD-ROOM_USER**
+
+Añade un usuario a una sala de juego que ya ha sido creado anteriormente. Solo el usuario que ha realizado login puede incluirse en la sala.
+
+| Método |                          Endpoint                           |             Descripción           |
+|--------|-------------------------------------------------------------|-----------------------------------|
+| POST   |   `http://localhost:8000/api//room/{room_id}/user/{user_id}`|   Añade usuario a sala de juego   |
+
+- **DELETE-ROOM_USER**
+
+Elimina a un usuario de una sala de juego.Solo el usuario que ha realizado login puede eliminarse de la sala.
+
+| Método |                          Endpoint                           |             Descripción           |
+|--------|-------------------------------------------------------------|-----------------------------------|
+| DELETE |   `http://localhost:8000/api//room/{room_id}/user/{user_id}`|  Elimina usuario a sala de juego  |
+
 
 ## Contribuciones
 
