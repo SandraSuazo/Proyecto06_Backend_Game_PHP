@@ -173,11 +173,23 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+
+            if ($user->role === 'admin') {
+                return response()->json(
+                    [
+                        "success" => false,
+                        "message" => "Cannot delete an admin user.",
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
             $user->update(['isActive' => false]);
+
             return response()->json(
                 [
                     "success" => true,
-                    "message" => "User deleted",
+                    "message" => "User deactivated successfully",
                 ],
                 Response::HTTP_OK
             );
@@ -185,11 +197,35 @@ class UserController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "User cant be deleted.",
+                    "message" => "User cant be deactivated.",
                     'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
+
+    // public function deleteUser(Request $request, $id)
+    // {
+    //     try {
+    //         $user = User::findOrFail($id);
+    //         $user->update(['isActive' => false]);
+    //         return response()->json(
+    //             [
+    //                 "success" => true,
+    //                 "message" => "User deleted",
+    //             ],
+    //             Response::HTTP_OK
+    //         );
+    //     } catch (\Throwable $th) {
+    //         return response()->json(
+    //             [
+    //                 "success" => false,
+    //                 "message" => "User cant be deleted.",
+    //                 'error' => $th->getMessage()
+    //             ],
+    //             Response::HTTP_INTERNAL_SERVER_ERROR
+    //         );
+    //     }
+    // }
 }
