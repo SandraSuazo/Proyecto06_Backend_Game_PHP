@@ -62,8 +62,8 @@ Route::group([
     'middleware' => ['auth:sanctum']
 ], function () {
     Route::post('/message', [MessageController::class, 'createMessage']);
-    Route::get('/message', [MessageController::class, 'getMessageById']);
+    Route::get('/message/{id}', [MessageController::class, 'getMessageById']);
     Route::get('/messages', [MessageController::class, 'getAllRoomMessage']);
-    Route::put('/message', [MessageController::class, 'updatedMessage']);
-    Route::delete('/message', [MessageController::class, 'deleteMessage']);
+    Route::put('/message/{id}', [MessageController::class, 'updatedMessage']);
+    Route::delete('/message/{id}', [MessageController::class, 'deleteMessage']);
 });
