@@ -110,7 +110,6 @@ class RoomController extends Controller
                 ],
                 Response::HTTP_OK
             );
-
         } catch (\Throwable $th) {
             return response()->json(
                 [
@@ -121,6 +120,52 @@ class RoomController extends Controller
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    public function updateRoom(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'min:3|max:100',
+            'game_id' => [
+                function ($attribute, $value, $fail) {
+                    if (!Game::where('id', $value)->exists()) {
+                        $fail("The selected game doesn't exist.");
+                    }
+                },
+            ],
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error",
+                "errors" => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $room = Room::find($id);
+            if (!$room) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "Room not found",
+                ], Response::HTTP_NOT_FOUND);
+            }
+            $room->update([
+                'name' => $request->input('name', $room->name),
+                'game_id' => $request->input('game_id', $room->game_id),
+            ]);
+
+            return response()->json([
+                "success" => true,
+                "message" => "Room updated successfully",
+                "data" => $room
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Room cannot be updated",
+                "error" => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
