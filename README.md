@@ -28,6 +28,8 @@ AsanGames ha sido diseñado con la finalidad de recrear un portal de juegos util
 
 Este Backend está preparado para realizar los siguientes endpoints
 
+**USERS**
+
 - **REGISTER**
 
 Permite registrar al usuario. Es necesario que cumpla la validación del nombre, email y password para poder registrarse.
@@ -123,12 +125,66 @@ El admin puede eliminar usuarios.
 
 Esta acción sólo puede ser realizada si eres admin.
 
-- **CREATE GAME**
+**GAMES**
 
-Permite loguear al usuario. Es necesario que cumpla la validación del email y password para poder acceder.
+- **CREATE-GAME**
+
+Crea un juego nuevo. Es necesario que cumpla la validación del email y password para poder acceder.
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|
 | POST   |   `http://localhost:8000/api/game`   |         Crea un videojuego        |
 
-`
+**Payload de Ejemplo:**
+```json
+{
+    "name": "Nombre del juego", 
+    "category": "action",
+}
+```
+El nombre del juego no debe superar los 60 carácteres y la categoría del juego puede ser **action, shooter o arcade**. El id del usuario que cree el juego será asignado al juego.
+
+
+- **GET-GAME-BY-ID**
+
+El usuario puede buscar un videojuego por el id del mismo
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+|  GET   |  `http://localhost:8000/api/game/id` |      Burcar videojuego por Id     |
+
+- **GET-ALL-GAMES**
+
+El usuario puede buscar todos los videojuegos que han sido creados.
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+|  GET   |   `http://localhost:8000/api/games`  |   Mostrar todos los videojuegos   |
+
+- **UPDATE-GAME**
+
+Funcionalidad reservada al admin. Debe introducirse el id del videojuego a editar.
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+|  PUT   |  `http://localhost:8000/api/game/id` |       Editar un videojuego        |
+
+**Payload de Ejemplo:**
+```json
+{
+    "name": "Nombre del juego", 
+    "category": "action",
+}
+```
+Puede ser modificado simplemente uno de los campos o todos si así se desea. Para ello, en el payload debes indicar y rellenar los campos a modificar.
+
+- **DELETE-GAME**
+
+Funcionalidad reservada al admin. Debe introducirse el id del videojuego a eliminar.
+
+| Método |              Endpoint                |             Descripción           |
+|--------|--------------------------------------|-----------------------------------|
+| DELETE |  `http://localhost:8000/api/game/id` |      Elimina un videojuego        |
+
+
+
