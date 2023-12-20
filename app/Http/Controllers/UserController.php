@@ -172,10 +172,8 @@ class UserController extends Controller
     public function deleteUser(Request $request, $id)
     {
         try {
-
             $user = User::findOrFail($id);
-
-            $user->delete();
+            $user->update(['isActive' => false]);
             return response()->json(
                 [
                     "success" => true,
