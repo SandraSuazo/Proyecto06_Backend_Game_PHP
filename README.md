@@ -126,7 +126,7 @@ Esta acción sólo puede ser realizada si eres admin.
 
 - **DELETE-USER**
 
-Funcionalidad reservada al admin. Se realiza borrado lógico.
+Funcionalidad reservada al admin. Se realiza borrado lógico. El usuario admin no puede ser elimnado.
 
 | Método |              Endpoint                |             Descripción           |
 |--------|--------------------------------------|-----------------------------------|
@@ -230,6 +230,13 @@ Puede buscar todas las salas de juego que han sido creadas.
 |--------|--------------------------------------|-----------------------------------|
 |  GET   |   `http://localhost:8000/api/rooms`  |  Mostrar todos los salas de juego |
 
+- **GET-ALL-ROOMS-BY-GAME**
+
+Puede buscar todas las salas que tiene un juego.
+
+| Método |                 Endpoint                  |            Descripción            |
+|--------|-------------------------------------------|-----------------------------------|
+|  GET   |`http://localhost:8000/api/rooms/{game_id}`|  Mostrar todos los salas de juego |
 
 - **UPDATE-ROOM**
 

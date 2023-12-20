@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name', 100)->require();
             $table->boolean("is_active")->default(true);
             $table->unsignedBigInteger("game_id");
-            $table->foreign("game_id")->references("id")->on("games");
+            $table->foreign("game_id")->references("id")->on("games")->constrained()->onDelete("cascade");
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
