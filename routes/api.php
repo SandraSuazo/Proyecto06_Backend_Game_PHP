@@ -64,6 +64,6 @@ Route::group([
     Route::post('/message', [MessageController::class, 'createMessage']);
     Route::get('/message/{id}', [MessageController::class, 'getMessageById']);
     Route::get('/messages/{room_id}', [MessageController::class, 'getAllRoomMessage']);
-    Route::put('/message/{id}', [MessageController::class, 'updatedMessage']);
+    Route::put('/message/{id}', [MessageController::class, 'updateMessage']);
     Route::delete('/message/{id}', [MessageController::class, 'deleteMessage']);
 });

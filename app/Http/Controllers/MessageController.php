@@ -84,4 +84,41 @@ class MessageController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function updateMessage(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'message' => 'required|max:200',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error",
+                "errors" => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $message = Message::find($id);
+            if (!$message) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "Message not found"
+                ], Response::HTTP_NOT_FOUND);
+            }
+            $message->update([
+                'message' => $request->input('message', $message->message),
+            ]);
+            return response()->json([
+                "success" => true,
+                "message" => "Message updated successfully",
+                "data" => $message
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Message cannot be updated",
+                "error" => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
