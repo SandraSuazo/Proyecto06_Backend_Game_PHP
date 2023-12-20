@@ -50,13 +50,6 @@ Route::group([
     Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->middleware('isAdmin');
 });
 
-//ROOM_USER
-Route::post('/room-user', [Room_userController::class, 'createRoomUser']);
-Route::get('/rooms-user', [Room_userController::class, 'getRoomsUser']);
-Route::get('/members-room', [Room_userController::class, 'getMembersRoom']);
-Route::put('/room-user', [Room_userController::class, 'updateRoomUser']);
-Route::delete('/room-user', [Room_userController::class, 'deleteRoomUser']);
-
 // MESSAGES
 Route::group([
     'middleware' => ['auth:sanctum']
@@ -67,3 +60,10 @@ Route::group([
     Route::put('/message/{id}', [MessageController::class, 'updateMessage']);
     Route::delete('/message/{id}', [MessageController::class, 'deleteMessage']);
 });
+
+//ROOM_USER
+Route::post('/room-user', [Room_userController::class, 'createRoomUser']);
+Route::get('/rooms-user', [Room_userController::class, 'getRoomsUser']);
+Route::get('/members-room', [Room_userController::class, 'getMembersRoom']);
+Route::put('/room-user', [Room_userController::class, 'updateRoomUser']);
+Route::delete('/room-user', [Room_userController::class, 'deleteRoomUser']);
