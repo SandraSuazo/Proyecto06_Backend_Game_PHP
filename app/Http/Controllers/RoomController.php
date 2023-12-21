@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Models\Game;
 use App\Models\Room;
 use Illuminate\Http\Request;
@@ -33,8 +34,6 @@ class RoomController extends Controller
         }
 
         try {
-            $user = auth()->user();
-
             $newRoom = Room::create([
                 "name" => $request->input('name'),
                 "game_id" => $request->input('game_id')
@@ -46,11 +45,14 @@ class RoomController extends Controller
                 "data" => $newRoom
             ], Response::HTTP_CREATED);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Room cant be created",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -60,13 +62,7 @@ class RoomController extends Controller
             $room = Room::query()->find($id);
 
             if (!$room) {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "Room not found"
-                    ],
-                    Response::HTTP_NOT_FOUND
-                );
+                throw CustomException::createException('Room not found', 404);
             }
             return response()->json(
                 [
@@ -77,14 +73,13 @@ class RoomController extends Controller
                 Response::HTTP_OK
             );
         } catch (\Throwable $th) {
-
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Room cant be archieved",
-                    "error" => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -92,14 +87,10 @@ class RoomController extends Controller
     public function getAllRooms(Request $request)
     {
         try {
-
             $rooms = Room::query()->get();
 
             if (count($rooms) === 0) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "No rooms found",
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Rooms not found', 404);
             }
 
             return response()->json(
@@ -114,11 +105,10 @@ class RoomController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Rooms cant be archieved",
-                    "error" => $th->getMessage()
-
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -129,10 +119,7 @@ class RoomController extends Controller
             $rooms = Room::where('game_id', $game_id)->get();
 
             if (count($rooms) === 0) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "No rooms found for the specified game",
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('No rooms found for the specified game', 404);
             }
 
             return response()->json(
@@ -143,16 +130,14 @@ class RoomController extends Controller
                 ],
                 Response::HTTP_OK
             );
-
         } catch (\Throwable $th) {
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Rooms cannot be retrieved",
-                    "error" => $th->getMessage()
-
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -179,10 +164,7 @@ class RoomController extends Controller
         try {
             $room = Room::find($id);
             if (!$room) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Room not found",
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Room not found', 404);
             }
             $room->update([
                 'name' => $request->input('name', $room->name),
@@ -195,11 +177,14 @@ class RoomController extends Controller
                 "data" => $room
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Room cannot be updated",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -208,10 +193,7 @@ class RoomController extends Controller
         try {
             $room = Room::find($id);
             if (!$room) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Room not found",
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Room not found', 404);
             }
             $room->update(['is_active' => false]);
             return response()->json([
@@ -219,11 +201,14 @@ class RoomController extends Controller
                 "message" => "Room soft deleted successfully",
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Room cannot be soft deleted",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 }

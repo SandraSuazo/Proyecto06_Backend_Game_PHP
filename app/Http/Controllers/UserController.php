@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,18 +17,16 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return response()->json(
                     [
-                        'success' => true,
-                        'message' => 'User registered successfully',
+                        'success' => false,
+                        'message' => 'User cant be registered',
                         'error' => $validator->errors()
                     ],
                     Response::HTTP_BAD_REQUEST
                 );
             }
-
             $name = $request->input('name');
             $email = $request->input('email');
             $password = $request->input('password');
-
 
             $encryptedPassword = bcrypt($password);
             $newUser = User::create(
@@ -37,7 +36,6 @@ class UserController extends Controller
                     'password' => $encryptedPassword,
                 ]
             );
-
             return response()->json(
                 [
                     'success' => true,
@@ -47,14 +45,13 @@ class UserController extends Controller
                 Response::HTTP_OK
             );
         } catch (\Throwable $th) {
-
             return response()->json(
                 [
-                    'success' => false,
-                    'message' => 'User cant be registered',
-                    'error' => $th->getMessage()
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -66,7 +63,6 @@ class UserController extends Controller
             'email' => 'required|unique:users|email',
             'password' => 'required|min:6|max:100'
         ]);
-
         return $validator;
     }
 
@@ -74,7 +70,9 @@ class UserController extends Controller
     {
         try {
             $user = auth()->user();
-
+            if (!$user) {
+                throw CustomException::createException('User not found', 404);
+            }
             return response()->json(
                 [
                     "success" => true,
@@ -84,21 +82,19 @@ class UserController extends Controller
                 Response::HTTP_OK
             );
         } catch (\Throwable $th) {
-
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Error getting profile user",
-                    'error' => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
 
     public function updateProfile(Request $request)
     {
-
         try {
             $token = auth()->user();
             $user = User::query()->find($token->id);
@@ -110,17 +106,14 @@ class UserController extends Controller
             if ($request->has('name')) {
                 $user->name = $name;
             }
-
             if ($request->has('email')) {
                 $user->email = $email;
             }
-
             if ($request->has('password')) {
                 $user->password = bcrypt($password);
             }
 
             $user->save();
-
             return response()->json(
                 [
                     "success" => true,
@@ -133,10 +126,10 @@ class UserController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Profile user cant be updated",
-                    'error' => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -145,10 +138,7 @@ class UserController extends Controller
     {
         try {
             $count = $request->query('count', 10);
-            $activeUser = $request->query('is_active', true);
-
-            $users = User::where('is_active', $activeUser)->paginate($count);
-
+            $users = User::paginate($count);
             return response()->json(
                 [
                     'success' => true,
@@ -160,11 +150,11 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json(
                 [
-                    'success' => false,
-                    'message' => 'Users cant be retrieved',
-                    'error' => $th->getMessage()
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -175,17 +165,9 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             if ($user->role === 'admin') {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "Cannot delete an admin user.",
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
+                throw CustomException::createException('Cannot delete an admin user', 400);
             }
-
             $user->delete();
-
             return response()->json(
                 [
                     "success" => true,
@@ -197,10 +179,10 @@ class UserController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "User cant be deleted.",
-                    'error' => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
