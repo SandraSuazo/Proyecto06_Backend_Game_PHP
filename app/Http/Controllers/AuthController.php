@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,30 +29,22 @@ class AuthController extends Controller
                     Response::HTTP_BAD_REQUEST
                 );
             }
+
             $email = $request->input('email');
             $password = $request->input('password');
-            $user = User::query()->where('email', $email)->first();
 
+            $user = User::query()->where('email', $email)->first();
             if (!$user) {
-                return response()->json(
-                    [
-                        'success' => true,
-                        'message' => 'Email or password invalid',
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
+                throw CustomException::createException('Email or password invalid', 400);
             }
+
             $passwordIsValid = Hash::check($password, $user->password);
             if (!$passwordIsValid) {
-                return response()->json(
-                    [
-                        'success' => true,
-                        'message' => 'Email or password invalid',
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
+                throw CustomException::createException('Email or password invalid', 400);
             }
+
             $token = $user->createToken('apiToken')->plainTextToken;
+
             return response()->json(
                 [
                     'success' => true,
@@ -64,11 +57,11 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             return response()->json(
                 [
-                    'success' => false,
-                    'message' => 'User cant be logged',
-                    'error' => $th->getMessage()
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -78,7 +71,9 @@ class AuthController extends Controller
         try {
             $accessToken = $request->bearerToken();
             $token = PersonalAccessToken::findToken($accessToken);
+
             $token->delete();
+
             return response()->json(
                 [
                     'success' => true,
@@ -89,11 +84,11 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             return response()->json(
                 [
-                    'success' => false,
-                    'message' => 'User cant be logged out',
-                    'error' => $th->getMessage()
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }

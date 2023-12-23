@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -24,22 +25,27 @@ class GameController extends Controller
                     "error" => $validator->errors()
                 ], Response::HTTP_BAD_REQUEST);
             }
+
             $newGame = Game::create([
                 "name" => $request->input('name'),
                 "category" => $request->input('category'),
                 "user_id" => $user->id
             ]);
+
             return response()->json([
                 "success" => true,
                 "message" => "Game created successfully",
                 "data" => $newGame
             ], Response::HTTP_CREATED);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Error creating a game",
-                'error' => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -48,14 +54,9 @@ class GameController extends Controller
         try {
             $game = Game::query()->find($id);
             if (!$game) {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "Game not found",
-                    ],
-                    Response::HTTP_NOT_FOUND
-                );
+                throw CustomException::createException('Game not found', 404);
             }
+
             return response()->json(
                 [
                     "success" => true,
@@ -68,10 +69,10 @@ class GameController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Error archieve the game",
-                    'error' => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -82,11 +83,7 @@ class GameController extends Controller
             $games = Game::all();
             return $games->isEmpty()
                 ? response()->json(
-                    [
-                        "success" => true,
-                        "message" => "There are no games"
-                    ],
-                    Response::HTTP_OK
+                    throw CustomException::createException('Game not found', 404)
                 )
                 : response()->json(
                     [
@@ -100,10 +97,10 @@ class GameController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Error achieving the games",
-                    "error" => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -113,14 +110,9 @@ class GameController extends Controller
         try {
             $game = Game::findOrFail($id);
             if (!$game) {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "Game not found",
-                    ],
-                    Response::HTTP_NOT_FOUND
-                );
+                throw CustomException::createException('Game not found', 404);
             }
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required|min:5|max:60',
                 'category' => 'in:shooter,action,arcade',
@@ -135,9 +127,12 @@ class GameController extends Controller
                     Response::HTTP_BAD_REQUEST
                 );
             }
+
             $game->name = $request->input('name', $game->name);
             $game->category = $request->input('category', $game->category);
+
             $game->save();
+
             return response()->json(
                 [
                     "success" => true,
@@ -150,11 +145,10 @@ class GameController extends Controller
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Game cant be updated",
-                    'error' => $th->getMessage()
-
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }
@@ -163,7 +157,6 @@ class GameController extends Controller
     {
         try {
             $game = Game::find($id);
-
             if ($game) {
                 $game->delete();
                 return response()->json(
@@ -175,21 +168,15 @@ class GameController extends Controller
                 );
             }
 
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Game not found"
-                ],
-                Response::HTTP_NOT_FOUND
-            );
+            throw CustomException::createException('Game not found', 404);
         } catch (\Throwable $th) {
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Game could not be deleted",
-                    'error' => $th->getMessage()
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
                 ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
+                $th->getCode()
             );
         }
     }

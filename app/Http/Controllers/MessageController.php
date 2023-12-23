@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -29,17 +30,21 @@ class MessageController extends Controller
                 "user_id" => $user->id,
                 "room_id" => $request->input('room_id')
             ]);
+
             return response()->json([
                 "success" => true,
                 "message" => "Message created successfully",
                 "data" => $newMessage
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Message cannot be created",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -48,22 +53,23 @@ class MessageController extends Controller
         try {
             $message = Message::find($id);
             if (!$message) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Message not found"
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Message not found', 404);
             }
+
             return response()->json([
                 "success" => true,
                 "message" => "Message retrieved successfully",
                 "data" => $message
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Message cannot be retrieved",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -71,17 +77,21 @@ class MessageController extends Controller
     {
         try {
             $messages = Message::where('room_id', $room_id)->get();
+
             return response()->json([
                 "success" => true,
                 "message" => "Messages retrieved successfully",
                 "data" => $messages
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Messages cannot be retrieved",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -100,25 +110,27 @@ class MessageController extends Controller
         try {
             $message = Message::find($id);
             if (!$message) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Message not found"
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Message not found', 404);
             }
+
             $message->update([
                 'message' => $request->input('message', $message->message),
             ]);
+
             return response()->json([
                 "success" => true,
                 "message" => "Message updated successfully",
                 "data" => $message
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Message cannot be updated",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -127,22 +139,24 @@ class MessageController extends Controller
         try {
             $message = Message::find($id);
             if (!$message) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Message not found"
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Message not found', 404);
             }
+
             $message->delete();
+
             return response()->json([
                 "success" => true,
                 "message" => "Message deleted successfully"
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "Message cannot be deleted",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 }

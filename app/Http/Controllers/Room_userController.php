@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,12 +15,8 @@ class Room_userController extends Controller
         try {
             $room = Room::find($roomId);
             $user = User::find($userId);
-
             if (!$room || !$user) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Room or User not found"
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Room or User not found', 404);
             }
 
             $room->users()->attach($user->id);
@@ -29,11 +26,14 @@ class Room_userController extends Controller
                 "message" => "User added to room successfully"
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "User cannot be added to room",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 
@@ -42,12 +42,8 @@ class Room_userController extends Controller
         try {
             $room = Room::find($roomId);
             $user = User::find($userId);
-
             if (!$room || !$user) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Room or User not found"
-                ], Response::HTTP_NOT_FOUND);
+                throw CustomException::createException('Room or User not found', 404);
             }
 
             $room->users()->detach($user->id);
@@ -57,11 +53,14 @@ class Room_userController extends Controller
                 "message" => "User removed from room successfully"
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return response()->json([
-                "success" => false,
-                "message" => "User cannot be removed from room",
-                "error" => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $th->getMessage(),
+                    "error" => $th->getCode()
+                ],
+                $th->getCode()
+            );
         }
     }
 }

@@ -24,7 +24,6 @@ class RoomController extends Controller
                 },
             ],
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
@@ -60,10 +59,10 @@ class RoomController extends Controller
     {
         try {
             $room = Room::query()->find($id);
-
             if (!$room) {
                 throw CustomException::createException('Room not found', 404);
             }
+
             return response()->json(
                 [
                     "success" => true,
@@ -88,7 +87,6 @@ class RoomController extends Controller
     {
         try {
             $rooms = Room::query()->get();
-
             if (count($rooms) === 0) {
                 throw CustomException::createException('Rooms not found', 404);
             }
@@ -117,7 +115,6 @@ class RoomController extends Controller
     {
         try {
             $rooms = Room::where('game_id', $game_id)->get();
-
             if (count($rooms) === 0) {
                 throw CustomException::createException('No rooms found for the specified game', 404);
             }
@@ -166,6 +163,7 @@ class RoomController extends Controller
             if (!$room) {
                 throw CustomException::createException('Room not found', 404);
             }
+
             $room->update([
                 'name' => $request->input('name', $room->name),
                 'game_id' => $request->input('game_id', $room->game_id),
@@ -195,7 +193,9 @@ class RoomController extends Controller
             if (!$room) {
                 throw CustomException::createException('Room not found', 404);
             }
+
             $room->update(['is_active' => false]);
+
             return response()->json([
                 "success" => true,
                 "message" => "Room soft deleted successfully",

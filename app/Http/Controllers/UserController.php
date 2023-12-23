@@ -24,6 +24,7 @@ class UserController extends Controller
                     Response::HTTP_BAD_REQUEST
                 );
             }
+
             $name = $request->input('name');
             $email = $request->input('email');
             $password = $request->input('password');
@@ -36,6 +37,7 @@ class UserController extends Controller
                     'password' => $encryptedPassword,
                 ]
             );
+
             return response()->json(
                 [
                     'success' => true,
@@ -73,6 +75,7 @@ class UserController extends Controller
             if (!$user) {
                 throw CustomException::createException('User not found', 404);
             }
+
             return response()->json(
                 [
                     "success" => true,
@@ -114,6 +117,7 @@ class UserController extends Controller
             }
 
             $user->save();
+
             return response()->json(
                 [
                     "success" => true,
@@ -139,6 +143,7 @@ class UserController extends Controller
         try {
             $count = $request->query('count', 10);
             $users = User::paginate($count);
+
             return response()->json(
                 [
                     'success' => true,
@@ -163,11 +168,12 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-
             if ($user->role === 'admin') {
                 throw CustomException::createException('Cannot delete an admin user', 400);
             }
+
             $user->delete();
+
             return response()->json(
                 [
                     "success" => true,
